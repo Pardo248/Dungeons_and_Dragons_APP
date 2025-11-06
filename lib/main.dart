@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_diego_castillo/login_screen.dart';
+import 'package:proyecto_diego_castillo/register_page.dart';
+import 'package:proyecto_diego_castillo/personajes_page.dart';
+// Pantallas del personaje 
+import 'package:proyecto_diego_castillo/personaje_pages/habilidades_page.dart';
+import 'package:proyecto_diego_castillo/personaje_pages/historia.dart';
+import 'package:proyecto_diego_castillo/personaje_pages/mochila.dart';
+import 'package:proyecto_diego_castillo/personaje_pages/stats_page.dart';
 
 void main() {
+  
   runApp(const MyApp());
 }
 
@@ -30,7 +39,17 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/login',
+      routes: {
+        '/login': (_) => const LoginPage(),
+        '/register': (_) => const RegisterPage(),
+        '/screen3': (_) => const Screen3(),
+        //Personaje
+        '/stats': (_) => const StatsPage(),
+        '/habilidades': (_) => const HabilidadesPage(),
+        '/mochila': (_) => const MochilaPage(),
+        '/historia': (_) => const HistoriaPage(),
+      },
     );
   }
 }
