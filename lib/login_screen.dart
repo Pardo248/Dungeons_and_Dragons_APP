@@ -51,7 +51,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('LOGIN')),
+      AppBar(
+  title: const Text('Diego Castillo Pardo'),
+  centerTitle: true,
+  flexibleSpace: Container(
+    decoration: const BoxDecoration(
+      image: DecorationImage(
+        image: AssetImage('assets/images/fondo_appbar.jpg'),
+        fit: BoxFit.cover,
+      ),
+    ),
+  ),
+)
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420),
@@ -102,6 +113,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+      
     );
   }
 }
