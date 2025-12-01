@@ -19,4 +19,10 @@ class AppImages {
 class AppLogos {
   static const String cofre =
       'https://raw.githubusercontent.com/Pardo248/Dungeons_and_Dragons_APP/refs/heads/main/assets/Images/cofre.png';
+  static const String stats =
+      'https://raw.githubusercontent.com/Pardo248/Dungeons_and_Dragons_APP/refs/heads/main/assets/Images/stats.png';
+  static const String habilidades =
+      'https://raw.githubusercontent.com/Pardo248/Dungeons_and_Dragons_APP/refs/heads/main/assets/Images/habilidades.png';
+  static const String historia =
+      'https://raw.githubusercontent.com/Pardo248/Dungeons_and_Dragons_APP/refs/heads/main/assets/Images/historia.png'; 
 }

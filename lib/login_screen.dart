@@ -15,8 +15,14 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    DatabaseHelper.instance.initDB(); // inicializa de inmediato
+  }
+
   Future<void> _login() async {
-    await DatabaseHelper.instance.initDB();
+    //await DatabaseHelper.instance.initDB();
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _loading = true);
@@ -35,12 +41,15 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
   }
+
+  
 
   @override
   void dispose() {
@@ -52,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ⭐ APP BAR con imagen del pergamino
+      //  APP BAR con imagen del pergamino
       appBar: AppBar(
         title: Text(
           'Diego Castillo Pardo',
@@ -73,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
 
-      // ⭐ FONDO COMPLETO
+      //  FONDO COMPLETO
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -95,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    
                     // ⭐ Usuario
                     TextFormField(
                       controller: _userCtrl,
@@ -103,7 +111,9 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: 'Usuario',
                         fillColor: AppColors.textFieldBackground,
                         filled: true,
-                        labelStyle: const TextStyle(color: AppColors.textPrimary),
+                        labelStyle: const TextStyle(
+                          color: AppColors.textPrimary,
+                        ),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: AppColors.secondary),
                         ),
@@ -121,7 +131,9 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: 'Contraseña',
                         fillColor: AppColors.textFieldBackground,
                         filled: true,
-                        labelStyle: const TextStyle(color: AppColors.textPrimary),
+                        labelStyle: const TextStyle(
+                          color: AppColors.textPrimary,
+                        ),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: AppColors.secondary),
                         ),
@@ -146,7 +158,9 @@ class _LoginPageState extends State<LoginPage> {
                                 width: 20,
                                 height: 20,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: Colors.white),
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
                               )
                             : const Text('Iniciar'),
                       ),
@@ -166,7 +180,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ),

@@ -27,7 +27,18 @@ class _Screen3State extends State<Screen3> {
       _loading = true;
       _error = null;
     });
+
     try {
+      // Si por alguna razón no hay usuario logueado
+      if (DatabaseHelper.instance.currentUserId == null) {
+        setState(() {
+          _items = [];
+          _error =
+              'No hay usuario autenticado. Vuelve a iniciar sesión para ver tus personajes.';
+        });
+        return;
+      }
+
       final data = await DatabaseHelper.instance.getCharacters();
       setState(() => _items = data);
     } catch (e) {
@@ -66,19 +77,20 @@ class _Screen3State extends State<Screen3> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content;
+    Widget body;
 
     if (_loading) {
-      content = const Center(child: CircularProgressIndicator());
+      body = const Center(child: CircularProgressIndicator());
     } else if (_error != null) {
-      content = Center(
+      body = Center(
         child: Text(
-          'Error: $_error',
+          _error!,
           style: const TextStyle(color: AppColors.textPrimary),
+          textAlign: TextAlign.center,
         ),
       );
     } else if (_items.isEmpty) {
-      content = RefreshIndicator(
+      body = RefreshIndicator(
         onRefresh: _load,
         child: ListView(
           children: const [
@@ -93,7 +105,7 @@ class _Screen3State extends State<Screen3> {
         ),
       );
     } else {
-      content = RefreshIndicator(
+      body = RefreshIndicator(
         onRefresh: _load,
         child: ListView.separated(
           itemCount: _items.length,
@@ -131,7 +143,6 @@ class _Screen3State extends State<Screen3> {
     }
 
     return Scaffold(
-      // 🧾 AppBar con pergamino
       appBar: AppBar(
         title: const Text(
           'Personajes',
@@ -151,8 +162,6 @@ class _Screen3State extends State<Screen3> {
           ),
         ),
       ),
-
-      // 🏰 Fondo épico
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -162,10 +171,8 @@ class _Screen3State extends State<Screen3> {
             fit: BoxFit.cover,
           ),
         ),
-        child: content,
+        child: body,
       ),
-
-      // ✨ FAB para añadir personaje
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openAdd,
         backgroundColor: AppColors.button,

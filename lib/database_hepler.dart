@@ -7,6 +7,9 @@ class DatabaseHelper {
 
   Database? _db;
 
+  int? _currentUserId;
+  int? get currentUserId => _currentUserId;
+
   Future<void> initDB() async {
     if (_db != null) return;
 
@@ -15,7 +18,7 @@ class DatabaseHelper {
 
     _db = await openDatabase(
       path,
-      version: 7, // 👈 NUEVA VERSIÓN
+      version: 8, //
       onCreate: (db, _) async {
         // ===== USERS =====
         await db.execute('''
@@ -32,7 +35,9 @@ class DatabaseHelper {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             class TEXT NOT NULL,
-            level INTEGER NOT NULL DEFAULT 1
+            level INTEGER NOT NULL DEFAULT 1,
+            user_id INTEGER NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users(id)
           );
         ''');
 
@@ -256,6 +261,14 @@ class DatabaseHelper {
             );
           ''');
         }
+
+        if (oldVersion < 8) {
+          await db.execute(
+            'ALTER TABLE characters ADD COLUMN user_id INTEGER;',
+          );
+          // Opcional: podrías poner un user_id por defecto (ej. 1) si quieres:
+          // await db.execute('UPDATE characters SET user_id = 1 WHERE user_id IS NULL;');
+        }
       },
     );
   }
@@ -271,16 +284,44 @@ class DatabaseHelper {
   }
 
   // ===== USERS =====
-  Future<void> insertUser(String username, String password) async {
+  /*Future<void> insertUser(String username, String password) async {
     final db = _ensureDb();
-    await db.insert(
-      'users',
-      {'username': username, 'password': password},
-      conflictAlgorithm: ConflictAlgorithm.abort,
-    );
+    await db.insert('users', {
+      'username': username,
+      'password': password,
+    }, conflictAlgorithm: ConflictAlgorithm.abort);
+  }*/
+  Future<void> insertUser(String username, String password) async {
+    await initDB();
+    final db = _db!;
+    final id = await db.insert('users', {
+      'username': username,
+      'password': password,
+    });
+
+    // Opcional: que el usuario recién creado quede como "logueado"
+    _currentUserId = id;
   }
 
   Future<bool> validateUser(String username, String password) async {
+    await initDB();
+    final db = _db!;
+    final res = await db.query(
+      'users',
+      where: 'username = ? AND password = ?',
+      whereArgs: [username, password],
+      limit: 1,
+    );
+
+    if (res.isNotEmpty) {
+      _currentUserId = res.first['id'] as int;
+      return true;
+    }
+
+    _currentUserId = null;
+    return false;
+  }
+  /*Future<bool> validateUser(String username, String password) async {
     final db = _ensureDb();
     final res = await db.query(
       'users',
@@ -289,17 +330,51 @@ class DatabaseHelper {
       limit: 1,
     );
     return res.isNotEmpty;
-  }
+  }*/
 
   // ===== CHARACTERS =====
-  Future<int> insertCharacter(String name, String klass) async {
+  /*Future<int> insertCharacter(String name, String klass) async {
     final db = _ensureDb();
     return db.insert('characters', {'name': name, 'class': klass});
+  }*/
+  Future<int> insertCharacter(String name, String className) async {
+    await initDB();
+    final db = _db!;
+
+    final userId = _currentUserId;
+    if (userId == null) {
+      throw Exception('No hay usuario autenticado para crear personajes.');
+    }
+
+    final id = await db.insert('characters', {
+      'name': name,
+      'class': className,
+      'user_id': userId,
+    });
+
+    return id;
   }
 
-  Future<List<Map<String, dynamic>>> getCharacters() async {
+  /*Future<List<Map<String, dynamic>>> getCharacters() async {
     final db = _ensureDb();
     return db.query('characters', orderBy: 'id DESC');
+  }*/
+  Future<List<Map<String, dynamic>>> getCharacters() async {
+    await initDB();
+    final db = _db!;
+
+    final userId = _currentUserId;
+    if (userId == null) {
+      // Si no hay usuario logueado, devolvemos vacío
+      return [];
+    }
+
+    return await db.query(
+      'characters',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'id DESC',
+    );
   }
 
   Future<Map<String, dynamic>?> getCharacterById(int id) async {
@@ -393,11 +468,7 @@ class DatabaseHelper {
 
   Future<void> deleteMochilaItem(int itemId) async {
     final db = _ensureDb();
-    await db.delete(
-      'mochila_items',
-      where: 'id = ?',
-      whereArgs: [itemId],
-    );
+    await db.delete('mochila_items', where: 'id = ?', whereArgs: [itemId]);
   }
 
   // ===== HISTORIA =====

@@ -5,43 +5,40 @@ class BottomNav extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  const BottomNav({super.key, required this.currentIndex, required this.onTap});
+  const BottomNav({
+    super.key,
+    required this.currentIndex,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.bar_chart,
-                color: currentIndex == 0 ? Colors.purple : Colors.grey,
-              ),
-              onPressed: () => onTap(0),
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.flash_on,
-                color: currentIndex == 1 ? Colors.purple : Colors.grey,
-              ),
-              onPressed: () => onTap(1),
-            ),
-            IconButton(
-              icon: Image.network(AppLogos.cofre, width: 30, height: 30,color: currentIndex == 2 ? AppColors.secondary :AppColors.textPrimary,),
-              onPressed: () => onTap(2),
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.book,
-                color: currentIndex == 3 ? Colors.purple : Colors.grey,
-              ),
-              onPressed: () => onTap(3),
-            ),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+      decoration: const BoxDecoration(
+        color: AppColors.textFieldBackground,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _navButton(0, AppLogos.stats),
+          _navButton(1, AppLogos.habilidades),
+          _navButton(2, AppLogos.cofre),
+          _navButton(3, AppLogos.historia),
+        ],
+      ),
+    );
+  }
+
+  Widget _navButton(int index, String imageUrl) {
+    return IconButton(
+      onPressed: () => onTap(index),
+      iconSize: 32,
+      icon: ImageIcon(
+        NetworkImage(imageUrl),
+        color: currentIndex == index
+            ? AppColors.secondary      
+            : AppColors.textPrimary,   
       ),
     );
   }
