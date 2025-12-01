@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_diego_castillo/widgets/bottom_nav.dart';
 
 class HabilidadesPage extends StatelessWidget {
-  const HabilidadesPage({super.key});
+  final String? personName;
+  const HabilidadesPage({super.key, this.personName});
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-    final title = (args?['personName'] != null) ? 'Habilidades – ${args!['personName']}' : 'Habilidades';
+    final title = personName != null ? 'Mochila – $personName' : 'Mochila';
 
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: const Center(
-        child: Text('HABILIDADES', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+    return Center(
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
       ),
-      bottomNavigationBar: BottomNav(args: args),
     );
   }
 }

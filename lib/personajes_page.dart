@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_diego_castillo/database_hepler.dart';
 import 'package:proyecto_diego_castillo/add_character.dart';
-import 'package:proyecto_diego_castillo/personaje_pages/stats_page.dart';
+import 'package:proyecto_diego_castillo/personaje_pages/PersonagePages.dart';
+//import 'package:proyecto_diego_castillo/personaje_pages/stats_page.dart';
 
 class Screen3 extends StatefulWidget {
   const Screen3({super.key});
@@ -52,10 +53,21 @@ class _Screen3State extends State<Screen3> {
   }
 
   void _openStats(Map<String, dynamic> p) {
+  Navigator.pushNamed(
+    context,
+    '/PersonagePages',
+    arguments: {
+      'personId': p['id'],
+      'personName': p['name'],
+      'personClass': p['class'],
+    },
+  );
+}
+  /*void _openStats(Map<String, dynamic> p) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const StatsPage(),
+        builder: (_) => const PersonajePager(),
         settings: RouteSettings(arguments: {
           'personId': p['id'],
           'personName': p['name'],
@@ -63,7 +75,7 @@ class _Screen3State extends State<Screen3> {
         }),
       ),
     );
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

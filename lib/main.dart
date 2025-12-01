@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_diego_castillo/login_screen.dart';
 import 'package:proyecto_diego_castillo/register_page.dart';
 import 'package:proyecto_diego_castillo/personajes_page.dart';
+import 'package:proyecto_diego_castillo/personaje_pages/PersonagePages.dart';
 // Pantallas del personaje 
 import 'package:proyecto_diego_castillo/personaje_pages/habilidades_page.dart';
 import 'package:proyecto_diego_castillo/personaje_pages/historia.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Proyecto FUndamentos del desarollo Movil',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -39,16 +40,29 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+     /* home: Scaffold(
+        appBar: AppBar(
+          title: const Text('DIEGO CASTILLO PARDO'),
+        ),
+        body: const Center(
+          child: Text('Hola Mundo'),
+        ),
+      ),*/
       initialRoute: '/login',
       routes: {
         '/login': (_) => const LoginPage(),
         '/register': (_) => const RegisterPage(),
+        '/PersonagePages': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments
+            as Map<String, dynamic>?;
+            return PersonajePager(args: args);
+          },
         '/screen3': (_) => const Screen3(),
         //Personaje
-        '/stats': (_) => const StatsPage(),
+        /*'/stats': (_) => const StatsPage(),
         '/habilidades': (_) => const HabilidadesPage(),
         '/mochila': (_) => const MochilaPage(),
-        '/historia': (_) => const HistoriaPage(),
+        '/historia': (_) => const HistoriaPage(),*/
       },
     );
   }
