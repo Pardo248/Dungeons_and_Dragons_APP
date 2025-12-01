@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_diego_castillo/database_hepler.dart';
+import 'package:proyecto_diego_castillo/widgets/app_ui.dart';
 
 class MochilaPage extends StatefulWidget {
   final String? personName;
@@ -48,8 +49,8 @@ class _MochilaPageState extends State<MochilaPage> {
     await DatabaseHelper.instance.initDB();
 
     // === Cargar monedas (mochila) ===
-    final mochila = await DatabaseHelper.instance
-        .getMochilaByPersonId(widget.personId!);
+    final mochila =
+        await DatabaseHelper.instance.getMochilaByPersonId(widget.personId!);
 
     _pcCtrl.text = (mochila?['pc'] ?? 0).toString();
     _ppCtrl.text = (mochila?['pp'] ?? 0).toString();
@@ -58,8 +59,8 @@ class _MochilaPageState extends State<MochilaPage> {
     _pptCtrl.text = (mochila?['ppt'] ?? 0).toString();
 
     // === Cargar ítems de mochila ===
-    final itemsRes = await DatabaseHelper.instance
-        .getMochilaItemsByPersonId(widget.personId!);
+    final itemsRes =
+        await DatabaseHelper.instance.getMochilaItemsByPersonId(widget.personId!);
 
     _items = itemsRes
         .map((row) => MochilaItem(
@@ -195,8 +196,9 @@ class _MochilaPageState extends State<MochilaPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Container(
-      color: Colors.amber,
+    // Vive dentro de PersonajePager → ahí ya está el fondo, aquí solo layout/colores
+    return DefaultTextStyle(
+      style: const TextStyle(color: AppColors.textPrimary),
       child: ListView(
         padding: const EdgeInsets.all(12),
         children: [
@@ -223,6 +225,10 @@ class _MochilaPageState extends State<MochilaPage> {
           Align(
             alignment: Alignment.centerRight,
             child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.button,
+                foregroundColor: Colors.white,
+              ),
               onPressed: _showAddItemDialog,
               icon: const Icon(Icons.add),
               label: const Text('Agregar ítem'),
@@ -234,7 +240,10 @@ class _MochilaPageState extends State<MochilaPage> {
           if (_items.isEmpty)
             const Text(
               'No hay ítems en la mochila.',
-              style: TextStyle(fontStyle: FontStyle.italic),
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                color: AppColors.textPrimary,
+              ),
             )
           else
             ..._items.map((item) => _itemTile(item)).toList(),
@@ -244,28 +253,49 @@ class _MochilaPageState extends State<MochilaPage> {
   }
 
   Widget _itemTile(MochilaItem item) {
-    return ListTile(
-      title: Text(item.name),
-      subtitle: item.description.isNotEmpty
-          ? Text(item.description)
-          : const Text('Sin descripción'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            onPressed: () => _updateItemQuantity(item, item.quantity - 1),
-            icon: const Icon(Icons.remove),
+    return Card(
+      color: AppColors.textFieldBackground.withOpacity(0.9),
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(color: AppColors.secondary, width: 1.2),
+      ),
+      child: ListTile(
+        title: Text(
+          item.name,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
           ),
-          Text('${item.quantity}'),
-          IconButton(
-            onPressed: () => _updateItemQuantity(item, item.quantity + 1),
-            icon: const Icon(Icons.add),
-          ),
-          IconButton(
-            onPressed: () => _deleteItem(item),
-            icon: const Icon(Icons.delete),
-          ),
-        ],
+        ),
+        subtitle: Text(
+          item.description.isNotEmpty ? item.description : 'Sin descripción',
+          style: const TextStyle(color: AppColors.textPrimary),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () => _updateItemQuantity(item, item.quantity - 1),
+              icon: const Icon(Icons.remove),
+              color: AppColors.secondary,
+            ),
+            Text(
+              '${item.quantity}',
+              style: const TextStyle(color: AppColors.textPrimary),
+            ),
+            IconButton(
+              onPressed: () => _updateItemQuantity(item, item.quantity + 1),
+              icon: const Icon(Icons.add),
+              color: AppColors.secondary,
+            ),
+            IconButton(
+              onPressed: () => _deleteItem(item),
+              icon: const Icon(Icons.delete),
+              color: AppColors.secondary,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -275,7 +305,11 @@ class _MochilaPageState extends State<MochilaPage> {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
         SizedBox(
           width: 40,
@@ -286,14 +320,18 @@ class _MochilaPageState extends State<MochilaPage> {
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
             onChanged: (_) => _onFieldChanged(),
+            style: const TextStyle(color: AppColors.textPrimary),
             decoration: const InputDecoration(
               counterText: "",
               hintText: "0",
               filled: true,
-              fillColor: Color.fromARGB(255, 149, 149, 149),
+              fillColor: AppColors.textFieldBackground,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(width: 1),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: AppColors.secondary,
+                ),
               ),
               contentPadding: EdgeInsets.zero,
             ),

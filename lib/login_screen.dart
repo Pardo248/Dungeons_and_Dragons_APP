@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_diego_castillo/database_hepler.dart';
+import 'package:proyecto_diego_castillo/widgets/app_ui.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -51,69 +52,128 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      AppBar(
-  title: const Text('Diego Castillo Pardo'),
-  centerTitle: true,
-  flexibleSpace: Container(
-    decoration: const BoxDecoration(
-      image: DecorationImage(
-        image: AssetImage('assets/images/fondo_appbar.jpg'),
-        fit: BoxFit.cover,
-      ),
-    ),
-  ),
-)
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 420),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                TextFormField(
-                  controller: _userCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Usuario',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Requerido' : null,
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _passCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Contraseña',
-                    border: OutlineInputBorder(),
-                  ),
-                  obscureText: true,
-                  validator: (v) =>
-                      (v == null || v.isEmpty) ? 'Requerido' : null,
-                ),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: _loading ? null : _login,
-                  child: _loading
-                      ? const SizedBox(
-                          width: 20, height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Iniciar'),
-                ),
-                const SizedBox(height: 8),
-                TextButton(
-                  onPressed: _loading
-                      ? null
-                      : () => Navigator.pushNamed(context, '/register'),
-                  child: const Text('Registrarse'),
-                ),
-              ]),
+      // ⭐ APP BAR con imagen del pergamino
+      appBar: AppBar(
+        title: Text(
+          'Diego Castillo Pardo',
+          style: const TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(AppImages.pergamNet),
+              fit: BoxFit.fill,
             ),
           ),
         ),
       ),
-      
+
+      // ⭐ FONDO COMPLETO
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(AppImages.backgroundNet),
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        // ⭐ FORMULARIO EN EL CENTRO
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    
+                    // ⭐ Usuario
+                    TextFormField(
+                      controller: _userCtrl,
+                      decoration: InputDecoration(
+                        labelText: 'Usuario',
+                        fillColor: AppColors.textFieldBackground,
+                        filled: true,
+                        labelStyle: const TextStyle(color: AppColors.textPrimary),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.secondary),
+                        ),
+                      ),
+                      validator: (v) =>
+                          (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // ⭐ Contraseña
+                    TextFormField(
+                      controller: _passCtrl,
+                      decoration: InputDecoration(
+                        labelText: 'Contraseña',
+                        fillColor: AppColors.textFieldBackground,
+                        filled: true,
+                        labelStyle: const TextStyle(color: AppColors.textPrimary),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.secondary),
+                        ),
+                      ),
+                      obscureText: true,
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? 'Requerido' : null,
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // ⭐ Botón principal
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.button,
+                        ),
+                        onPressed: _loading ? null : _login,
+                        child: _loading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: Colors.white),
+                              )
+                            : const Text('Iniciar'),
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    TextButton(
+                      onPressed: _loading
+                          ? null
+                          : () => Navigator.pushNamed(context, '/register'),
+                      child: const Text(
+                        'Registrarse',
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

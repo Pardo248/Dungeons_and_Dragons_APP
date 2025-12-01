@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_diego_castillo/database_hepler.dart';
 import 'package:proyecto_diego_castillo/add_character.dart';
 import 'package:proyecto_diego_castillo/personaje_pages/PersonagePages.dart';
-//import 'package:proyecto_diego_castillo/personaje_pages/stats_page.dart';
+import 'package:proyecto_diego_castillo/widgets/app_ui.dart';
 
 class Screen3 extends StatefulWidget {
   const Screen3({super.key});
@@ -38,14 +38,12 @@ class _Screen3State extends State<Screen3> {
   }
 
   Future<void> _openAdd() async {
-    // 👇 ahora esperamos un int? (el id del personaje creado)
     final int? newId = await Navigator.push<int>(
       context,
       MaterialPageRoute(builder: (_) => const AddCharacterPage()),
     );
 
     if (newId != null) {
-      // se creó un personaje
       await _load();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -68,35 +66,64 @@ class _Screen3State extends State<Screen3> {
 
   @override
   Widget build(BuildContext context) {
-    Widget body;
+    Widget content;
+
     if (_loading) {
-      body = const Center(child: CircularProgressIndicator());
+      content = const Center(child: CircularProgressIndicator());
     } else if (_error != null) {
-      body = Center(child: Text('Error: $_error'));
+      content = Center(
+        child: Text(
+          'Error: $_error',
+          style: const TextStyle(color: AppColors.textPrimary),
+        ),
+      );
     } else if (_items.isEmpty) {
-      body = RefreshIndicator(
+      content = RefreshIndicator(
         onRefresh: _load,
         child: ListView(
           children: const [
             SizedBox(height: 160),
-            Center(child: Text('No hay personajes. Pulsa + para añadir')),
+            Center(
+              child: Text(
+                'No hay personajes. Pulsa + para añadir',
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
+            ),
           ],
         ),
       );
     } else {
-      body = RefreshIndicator(
+      content = RefreshIndicator(
         onRefresh: _load,
         child: ListView.separated(
           itemCount: _items.length,
-          separatorBuilder: (_, __) => const Divider(height: 1),
+          separatorBuilder: (_, __) => const Divider(
+            height: 1,
+            color: Colors.black26,
+          ),
           itemBuilder: (context, i) {
             final p = _items[i];
-            return ListTile(
-              leading: const Icon(Icons.person),
-              title: Text(p['name'] ?? ''),
-              subtitle: Text(p['class'] ?? ''),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => _openStats(p),
+            return Card(
+              color: AppColors.textFieldBackground.withOpacity(0.9),
+              elevation: 3,
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: ListTile(
+                leading: const Icon(Icons.person, color: AppColors.secondary),
+                title: Text(
+                  p['name'] ?? '',
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text(
+                  p['class'] ?? '',
+                  style: const TextStyle(color: AppColors.textPrimary),
+                ),
+                trailing:
+                    const Icon(Icons.chevron_right, color: AppColors.secondary),
+                onTap: () => _openStats(p),
+              ),
             );
           },
         ),
@@ -104,12 +131,49 @@ class _Screen3State extends State<Screen3> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Personajes')),
-      body: body,
+      // 🧾 AppBar con pergamino
+      appBar: AppBar(
+        title: const Text(
+          'Personajes',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(AppImages.pergamNet),
+              fit: BoxFit.fill,
+            ),
+          ),
+        ),
+      ),
+
+      // 🏰 Fondo épico
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(AppImages.backgroundNet),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: content,
+      ),
+
+      // ✨ FAB para añadir personaje
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openAdd,
-        icon: const Icon(Icons.add),
-        label: const Text('Añadir'),
+        backgroundColor: AppColors.button,
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text(
+          'Añadir',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }

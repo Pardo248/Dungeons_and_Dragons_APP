@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_diego_castillo/database_hepler.dart';
+import 'package:proyecto_diego_castillo/widgets/app_ui.dart';
 
 class StatsPage extends StatefulWidget {
   final String? personName;
@@ -67,16 +68,18 @@ class _StatsPageState extends State<StatsPage> {
     }
 
     // Cargar nivel del personaje
-    final character =
-        await DatabaseHelper.instance.getCharacterById(widget.personId!);
+    final character = await DatabaseHelper.instance.getCharacterById(
+      widget.personId!,
+    );
     _level = (character?['level'] ?? 1) as int;
 
     // Cargar stats si existen
-    final stats =
-        await DatabaseHelper.instance.getCharacterStats(widget.personId!);
+    final stats = await DatabaseHelper.instance.getCharacterStats(
+      widget.personId!,
+    );
 
     if (stats == null) {
-      // Valores por defecto (los que tenías hardcodeados)
+      // Valores por defecto
       _strScoreCtrl.text = '13';
       _strModCtrl.text = '+1';
       _dexScoreCtrl.text = '13';
@@ -115,7 +118,6 @@ class _StatsPageState extends State<StatsPage> {
   }
 
   String _formatMod(int value) {
-    // muestra +2, -1, etc.
     if (value >= 0) return '+$value';
     return value.toString();
   }
@@ -137,12 +139,11 @@ class _StatsPageState extends State<StatsPage> {
 
   Future<void> _saveStats() async {
     if (widget.personId == null) {
-    print('[_saveStats] personId es null, NO guardo');
-    return;
-  }
+      debugPrint('[_saveStats] personId es null, NO guardo');
+      return;
+    }
 
-  print('[_saveStats] guardando stats para personId=${widget.personId}');
-
+    debugPrint('[_saveStats] guardando stats para personId=${widget.personId}');
 
     final strScore = _parseInt(_strScoreCtrl.text, defaultValue: 13);
     final strMod = _parseMod(_strModCtrl.text, defaultValue: 1);
@@ -191,8 +192,6 @@ class _StatsPageState extends State<StatsPage> {
       _level,
     );
 
-    // si quieres, podrías recalcular bonificador por competencia aquí según nivel
-
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('¡$levelText ha subido a nivel $_level!')),
@@ -208,139 +207,147 @@ class _StatsPageState extends State<StatsPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // Recuerda: esta página vive dentro de PersonajePager, que ya tiene Scaffold.
+    // Esta página vive dentro de PersonajePager, que ya tiene Scaffold y fondo.
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Nivel + botón subir nivel
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Nivel: $_level',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+      child: DefaultTextStyle(
+        style: const TextStyle(color: AppColors.textPrimary),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Nivel + botón subir nivel
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Nivel: $_level',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: _levelUp,
-                child: const Text('Subir de nivel'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.button,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: _levelUp,
+                  child: const Text('LVL UP'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
 
-          _titulo("Atributos"),
-          const SizedBox(height: 10),
+            _titulo("Atributos"),
+            const SizedBox(height: 10),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _StatCard(
-                nombre: "STR",
-                modController: _strModCtrl,
-                valorController: _strScoreCtrl,
-                onChanged: _saveStats,
-              ),
-              _StatCard(
-                nombre: "DEX",
-                modController: _dexModCtrl,
-                valorController: _dexScoreCtrl,
-                onChanged: _saveStats,
-              ),
-              _StatCard(
-                nombre: "CON",
-                modController: _conModCtrl,
-                valorController: _conScoreCtrl,
-                onChanged: _saveStats,
-              ),
-            ],
-          ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _StatCard(
+                  nombre: "STR",
+                  modController: _strModCtrl,
+                  valorController: _strScoreCtrl,
+                  onChanged: _saveStats,
+                ),
+                _StatCard(
+                  nombre: "DEX",
+                  modController: _dexModCtrl,
+                  valorController: _dexScoreCtrl,
+                  onChanged: _saveStats,
+                ),
+                _StatCard(
+                  nombre: "CON",
+                  modController: _conModCtrl,
+                  valorController: _conScoreCtrl,
+                  onChanged: _saveStats,
+                ),
+              ],
+            ),
 
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _StatCard(
-                nombre: "INT",
-                modController: _intModCtrl,
-                valorController: _intScoreCtrl,
-                onChanged: _saveStats,
-              ),
-              _StatCard(
-                nombre: "WIS",
-                modController: _wisModCtrl,
-                valorController: _wisScoreCtrl,
-                onChanged: _saveStats,
-              ),
-              _StatCard(
-                nombre: "CHA",
-                modController: _chaModCtrl,
-                valorController: _chaScoreCtrl,
-                onChanged: _saveStats,
-              ),
-            ],
-          ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _StatCard(
+                  nombre: "INT",
+                  modController: _intModCtrl,
+                  valorController: _intScoreCtrl,
+                  onChanged: _saveStats,
+                ),
+                _StatCard(
+                  nombre: "WIS",
+                  modController: _wisModCtrl,
+                  valorController: _wisScoreCtrl,
+                  onChanged: _saveStats,
+                ),
+                _StatCard(
+                  nombre: "CHA",
+                  modController: _chaModCtrl,
+                  valorController: _chaScoreCtrl,
+                  onChanged: _saveStats,
+                ),
+              ],
+            ),
 
-          const SizedBox(height: 25),
-          _titulo("Otros"),
+            const SizedBox(height: 25),
+            _titulo("Otros"),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _BoxGrandeEditable(
-                titulo: "Inspiración",
-                controller: _inspCtrl,
-                onChanged: _saveStats,
-              ),
-              _BoxGrandeEditable(
-                titulo: "Bonificador por competencia",
-                controller: _profBonusCtrl,
-                onChanged: _saveStats,
-              ),
-            ],
-          ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _BoxGrandeEditable(
+                  titulo: "Inspiración",
+                  controller: _inspCtrl,
+                  onChanged: _saveStats,
+                ),
+                _BoxGrandeEditable(
+                  titulo: "Bonificador por competencia",
+                  controller: _profBonusCtrl,
+                  onChanged: _saveStats,
+                ),
+              ],
+            ),
 
-          const SizedBox(height: 25),
+            const SizedBox(height: 25),
 
-          _titulo("Tiradas de Salvación"),
-          const SizedBox(height: 8),
-          _listaCheckboxEditable([
-            "+1 Fuerza",
-            "+1 Destreza",
-            "+4 Constitución",
-            "+2 Inteligencia",
-            "+2 Sabiduría",
-            "+3 Carisma",
-          ]),
+            _titulo("Tiradas de Salvación"),
+            const SizedBox(height: 8),
+            _listaCheckboxEditable([
+              "+1 Fuerza",
+              "+1 Destreza",
+              "+4 Constitución",
+              "+2 Inteligencia",
+              "+2 Sabiduría",
+              "+3 Carisma",
+            ]),
 
-          const SizedBox(height: 25),
+            const SizedBox(height: 25),
 
-          _titulo("Habilidades"),
-          const SizedBox(height: 8),
-          _listaCheckboxEditable([
-            "+1 Acrobacias (Des)",
-            "+1 Atletismo (Fue)",
-            "+4 C. Arcano (Int)",
-            "+3 Engaño (Car)",
-            "+2 Historia (Int)",
-            "+1 Interpretación (Car)",
-            "+2 Intimidación (Car)",
-            "+2 Investigación (Int)",
-            "+1 Juego de Manos (Des)",
-            "+2 Medicina (Sab)",
-            "+2 Naturaleza (Int)",
-            "+2 Percepción (Sab)",
-            "+2 Persuasión (Car)",
-            "+2 Religión (Int)",
-            "+2 Sigilo (Des)",
-            "+2 Supervivencia (Sab)",
-            "+2 Trato con Animales (Sab)",
-          ]),
-        ],
+            _titulo("Habilidades"),
+            const SizedBox(height: 8),
+            _listaCheckboxEditable([
+              "+1 Acrobacias (Des)",
+              "+1 Atletismo (Fue)",
+              "+4 C. Arcano (Int)",
+              "+3 Engaño (Car)",
+              "+2 Historia (Int)",
+              "+1 Interpretación (Car)",
+              "+2 Intimidación (Car)",
+              "+2 Investigación (Int)",
+              "+1 Juego de Manos (Des)",
+              "+2 Medicina (Sab)",
+              "+2 Naturaleza (Int)",
+              "+2 Percepción (Sab)",
+              "+2 Persuasión (Car)",
+              "+2 Religión (Int)",
+              "+2 Sigilo (Des)",
+              "+2 Supervivencia (Sab)",
+              "+2 Trato con Animales (Sab)",
+            ]),
+          ],
+        ),
       ),
     );
   }
@@ -352,6 +359,7 @@ class _StatsPageState extends State<StatsPage> {
       style: const TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.bold,
+        color: AppColors.textPrimary,
       ),
     );
   }
@@ -379,17 +387,25 @@ class _StatCard extends StatelessWidget {
       width: 95,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        border: Border.all(width: 2),
+        color: AppColors.textFieldBackground.withOpacity(0.9),
+        border: Border.all(width: 2, color: AppColors.secondary),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
-          Text(nombre, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            nombre,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+          ),
           const SizedBox(height: 5),
           TextField(
             controller: modController,
             textAlign: TextAlign.center,
             onChanged: (_) => onChanged(),
+            style: const TextStyle(color: AppColors.textPrimary),
             decoration: const InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.symmetric(vertical: 4),
@@ -402,6 +418,7 @@ class _StatCard extends StatelessWidget {
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
             onChanged: (_) => onChanged(),
+            style: const TextStyle(color: AppColors.textPrimary),
             decoration: const InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.symmetric(vertical: 4),
@@ -434,7 +451,8 @@ class _BoxGrandeEditable extends StatelessWidget {
       width: 150,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        border: Border.all(width: 2),
+        color: AppColors.textFieldBackground.withValues(),
+        border: Border.all(width: 2, color: AppColors.secondary),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -442,13 +460,17 @@ class _BoxGrandeEditable extends StatelessWidget {
           Text(
             titulo,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
           const SizedBox(height: 8),
           TextField(
             controller: controller,
             textAlign: TextAlign.center,
             onChanged: (_) => onChanged(),
+            style: const TextStyle(color: AppColors.textPrimary),
             decoration: const InputDecoration(
               isDense: true,
               border: InputBorder.none,
@@ -464,13 +486,7 @@ class _BoxGrandeEditable extends StatelessWidget {
 // Lista con checkboxes (visual solamente)
 // -------------------------------
 Widget _listaCheckboxEditable(List<String> items) {
-  return Column(
-    children: items
-        .map(
-          (e) => _CheckboxRow(label: e),
-        )
-        .toList(),
-  );
+  return Column(children: items.map((e) => _CheckboxRow(label: e)).toList());
 }
 
 class _CheckboxRow extends StatefulWidget {
@@ -491,15 +507,20 @@ class _CheckboxRowState extends State<_CheckboxRow> {
       children: [
         Checkbox(
           value: _checked,
+          activeColor: AppColors.secondary,
+          checkColor: AppColors.textPrimary,
           onChanged: (v) {
             setState(() => _checked = v ?? false);
-            // Si luego quieres, aquí podemos también guardar en BD.
+            // Aquí podrías guardar en BD si luego lo necesitas.
           },
         ),
         Expanded(
           child: Text(
             widget.label,
-            style: const TextStyle(fontSize: 16),
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppColors.textPrimary,
+            ),
           ),
         ),
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_diego_castillo/database_hepler.dart';
+import 'package:proyecto_diego_castillo/widgets/app_ui.dart';
 
 class HabilidadesPage extends StatefulWidget {
   final String? personName;
@@ -259,9 +260,9 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Container(
-      width: double.infinity,
-      color: Colors.amber,
+    // Vive dentro de PersonajePager (que ya tiene fondo), así que aquí solo layout y colores.
+    return DefaultTextStyle(
+      style: const TextStyle(color: AppColors.textPrimary),
       child: ListView(
         padding: const EdgeInsets.all(12),
         children: [
@@ -316,9 +317,14 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
     List<CharacterSpell> spells,
   ) {
     return Card(
+      color: AppColors.textFieldBackground.withOpacity(0.9),
       margin: const EdgeInsets.symmetric(vertical: 6),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: AppColors.secondary, width: 1.5),
+      ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
         child: Column(
           children: [
             // Título nivel + slots
@@ -330,16 +336,25 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 if (level == 0) ...[
                   const Text(
                     "MAX: ∞",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                   const Text(
                     "Usos: ∞",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                 ] else ...[
                   Text(
@@ -347,6 +362,7 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   Text(
@@ -354,6 +370,7 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ],
@@ -368,8 +385,11 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
                   alignment: Alignment.centerRight,
                   child: TextButton.icon(
                     onPressed: () => _addSpellDialog(level),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Agregar habilidad'),
+                    icon: const Icon(Icons.add, color: AppColors.secondary),
+                    label: const Text(
+                      'Agregar habilidad',
+                      style: TextStyle(color: AppColors.secondary),
+                    ),
                   ),
                 ),
               ],
@@ -386,6 +406,8 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
       children: [
         Checkbox(
           value: spell.known,
+          activeColor: AppColors.secondary,
+          checkColor: AppColors.textPrimary,
           onChanged: (bool? value) {
             if (value == null) return;
             _toggleKnown(spell, value);
@@ -396,6 +418,7 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
           onLongPress: () => _showSpellInfo(spell),
           child: Text(
             spell.level == 0 ? "${spell.name} (∞)" : spell.name,
+            style: const TextStyle(color: AppColors.textPrimary),
           ),
         ),
       ],
@@ -412,7 +435,11 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
         const SizedBox(height: 4),
         SizedBox(
@@ -424,14 +451,18 @@ class _HabilidadesPageState extends State<HabilidadesPage> {
             textAlign: TextAlign.center,
             keyboardType: isNumber ? TextInputType.number : TextInputType.text,
             onChanged: onChanged,
+            style: const TextStyle(color: AppColors.textPrimary),
             decoration: const InputDecoration(
               counterText: "",
               hintText: "-",
               filled: true,
-              fillColor: Color.fromARGB(255, 149, 149, 149),
+              fillColor: AppColors.textFieldBackground,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(width: 1),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: AppColors.secondary,
+                ),
               ),
               contentPadding: EdgeInsets.zero,
             ),

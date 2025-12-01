@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_diego_castillo/database_hepler.dart';
+import 'package:proyecto_diego_castillo/widgets/app_ui.dart';
 
 class HistoriaPage extends StatefulWidget {
   final String? personName;
@@ -80,21 +81,31 @@ class _HistoriaPageState extends State<HistoriaPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Container(
-      color: Colors.amber,
+    // Vive dentro de PersonajePager (que ya tiene fondo)
+    return DefaultTextStyle(
+      style: const TextStyle(color: AppColors.textPrimary),
       child: ListView(
         padding: const EdgeInsets.all(12.0),
         children: [
+          // FILA: Transfondo / Alineamiento (solo texto por ahora)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
               Text(
                 "Transfondo:",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
               ),
               Text(
                 "Alineamiento:",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
               ),
             ],
           ),
@@ -103,7 +114,11 @@ class _HistoriaPageState extends State<HistoriaPage> {
           // RASGOS
           const Text(
             "Rasgos de Personalidad",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -113,11 +128,14 @@ class _HistoriaPageState extends State<HistoriaPage> {
               maxLines: null,
               minLines: 2,
               onChanged: (_) => _onFieldChanged(),
+              style: const TextStyle(color: AppColors.textPrimary),
               decoration: const InputDecoration(
                 hintText: "Personalidad",
                 filled: true,
-                fillColor: Color.fromARGB(255, 149, 149, 149),
-                border: OutlineInputBorder(),
+                fillColor: AppColors.textFieldBackground,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.secondary),
+                ),
               ),
             ),
           ),
@@ -125,7 +143,11 @@ class _HistoriaPageState extends State<HistoriaPage> {
           // IDEALES
           const Text(
             "Ideales",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -135,11 +157,14 @@ class _HistoriaPageState extends State<HistoriaPage> {
               maxLines: null,
               minLines: 2,
               onChanged: (_) => _onFieldChanged(),
+              style: const TextStyle(color: AppColors.textPrimary),
               decoration: const InputDecoration(
                 hintText: "Ideales",
                 filled: true,
-                fillColor: Color.fromARGB(255, 149, 149, 149),
-                border: OutlineInputBorder(),
+                fillColor: AppColors.textFieldBackground,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.secondary),
+                ),
               ),
             ),
           ),
@@ -147,7 +172,11 @@ class _HistoriaPageState extends State<HistoriaPage> {
           // VÍNCULOS
           const Text(
             "Vínculos",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -157,11 +186,14 @@ class _HistoriaPageState extends State<HistoriaPage> {
               maxLines: null,
               minLines: 2,
               onChanged: (_) => _onFieldChanged(),
+              style: const TextStyle(color: AppColors.textPrimary),
               decoration: const InputDecoration(
                 hintText: "Vínculos",
                 filled: true,
-                fillColor: Color.fromARGB(255, 149, 149, 149),
-                border: OutlineInputBorder(),
+                fillColor: AppColors.textFieldBackground,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.secondary),
+                ),
               ),
             ),
           ),
@@ -169,7 +201,11 @@ class _HistoriaPageState extends State<HistoriaPage> {
           // DEFECTOS
           const Text(
             "Defectos",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -179,11 +215,14 @@ class _HistoriaPageState extends State<HistoriaPage> {
               maxLines: null,
               minLines: 2,
               onChanged: (_) => _onFieldChanged(),
+              style: const TextStyle(color: AppColors.textPrimary),
               decoration: const InputDecoration(
                 hintText: "Defectos",
                 filled: true,
-                fillColor: Color.fromARGB(255, 149, 149, 149),
-                border: OutlineInputBorder(),
+                fillColor: AppColors.textFieldBackground,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.secondary),
+                ),
               ),
             ),
           ),
@@ -191,7 +230,11 @@ class _HistoriaPageState extends State<HistoriaPage> {
           // DIARIO
           const Text(
             "Diario del Aventurero",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -201,11 +244,14 @@ class _HistoriaPageState extends State<HistoriaPage> {
               maxLines: null,
               minLines: 3,
               onChanged: (_) => _onFieldChanged(),
+              style: const TextStyle(color: AppColors.textPrimary),
               decoration: const InputDecoration(
                 hintText: "Escribe aquí tus aventuras...",
                 filled: true,
-                fillColor: Color.fromARGB(255, 149, 149, 149),
-                border: OutlineInputBorder(),
+                fillColor: AppColors.textFieldBackground,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.secondary),
+                ),
               ),
             ),
           ),

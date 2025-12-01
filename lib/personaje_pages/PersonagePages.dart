@@ -4,6 +4,7 @@ import 'package:proyecto_diego_castillo/personaje_pages/habilidades_page.dart';
 import 'package:proyecto_diego_castillo/personaje_pages/mochila.dart';
 import 'package:proyecto_diego_castillo/personaje_pages/historia.dart';
 import 'package:proyecto_diego_castillo/widgets/bottom_nav.dart';
+import 'package:proyecto_diego_castillo/widgets/app_ui.dart';
 
 class PersonajePager extends StatefulWidget {
   const PersonajePager({super.key});
@@ -28,7 +29,6 @@ class _PersonajePagerState extends State<PersonajePager> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
     if (args == null) {
-      // fallback de seguridad para no crashear
       _personId = -1;
       _personName = 'Personaje';
       _personClass = null;
@@ -61,7 +61,7 @@ class _PersonajePagerState extends State<PersonajePager> {
       case 2:
         return 'Mochila – $_personName';
       case 3:
-        return 'My HISTORIA / $_personName';
+        return 'Historia – $_personName';
       default:
         return _personName;
     }
@@ -70,33 +70,64 @@ class _PersonajePagerState extends State<PersonajePager> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 🧾 AppBar con pergamino
       appBar: AppBar(
-        title: Text(_titleForIndex(_currentIndex)),
+        title: Text(
+          _titleForIndex(_currentIndex),
+          style: const TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(AppImages.pergamNet),
+              fit: BoxFit.fill,
+            ),
+          ),
+        ),
       ),
-      body: PageView(
-        controller: _controller,
-        onPageChanged: (i) {
-          setState(() => _currentIndex = i);
-        },
-        children: [
-          StatsPage(
-            personName: _personName,
-            personId: _personId,
+
+      // 🏰 Fondo + PageView
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(AppImages.backgroundNet),
+            fit: BoxFit.cover,
           ),
-          HabilidadesPage(
-            personName: _personName,
-            personId: _personId,
-          ),
-          MochilaPage(
-            personName: _personName,
-            personId: _personId,
-          ),
-          HistoriaPage(
-            personName: _personName,
-            personId: _personId,
-          ),
-        ],
+        ),
+        child: PageView(
+          controller: _controller,
+          onPageChanged: (i) {
+            setState(() => _currentIndex = i);
+          },
+          children: [
+            StatsPage(
+              personName: _personName,
+              personId: _personId,
+            ),
+            HabilidadesPage(
+              personName: _personName,
+              personId: _personId,
+            ),
+            MochilaPage(
+              personName: _personName,
+              personId: _personId,
+            ),
+            HistoriaPage(
+              personName: _personName,
+              personId: _personId,
+            ),
+          ],
+        ),
       ),
+
+      //  bottom nav que controla el PageView
       bottomNavigationBar: BottomNav(
         currentIndex: _currentIndex,
         onTap: _onTabSelected,
