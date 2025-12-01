@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_diego_castillo/widgets/app_ui.dart';
 
 class BottomNav extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  const BottomNav({
-    super.key,
-    required this.currentIndex,
-    required this.onTap,
-  });
+  const BottomNav({super.key, required this.currentIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +30,7 @@ class BottomNav extends StatelessWidget {
               onPressed: () => onTap(1),
             ),
             IconButton(
-              icon: Icon(
-                Icons.backpack,
-                color: currentIndex == 2 ? Colors.purple : Colors.grey,
-              ),
+              icon: Image.network(AppLogos.cofre, width: 30, height: 30,color: currentIndex == 2 ? AppColors.secondary :AppColors.textPrimary,),
               onPressed: () => onTap(2),
             ),
             IconButton(
