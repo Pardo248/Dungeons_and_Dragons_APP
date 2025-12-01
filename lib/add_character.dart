@@ -15,24 +15,28 @@ class _AddCharacterPageState extends State<AddCharacterPage> {
   bool _saving = false;
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _saving = true);
-    try {
-      await DatabaseHelper.instance.insertCharacter(
-        _nameCtrl.text.trim(),
-        _classCtrl.text.trim(),
-      );
-      if (!mounted) return;
-      Navigator.pop(context, true); // 👈 volvemos indicando “creado”
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
-    } finally {
-      if (mounted) setState(() => _saving = false);
-    }
+  setState(() => _saving = true);
+  try {
+    final newId = await DatabaseHelper.instance.insertCharacter(
+      _nameCtrl.text.trim(),
+      _classCtrl.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    // ⬅⬅ devolvemos el ID del personaje creado
+    Navigator.pop(context, newId);
+  } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Error: $e')));
+  } finally {
+    if (mounted) setState(() => _saving = false);
   }
+}
+
 
   @override
   void dispose() {

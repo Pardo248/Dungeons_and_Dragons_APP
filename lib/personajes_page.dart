@@ -38,44 +38,33 @@ class _Screen3State extends State<Screen3> {
   }
 
   Future<void> _openAdd() async {
-    final created = await Navigator.push<bool>(
+    // 👇 ahora esperamos un int? (el id del personaje creado)
+    final int? newId = await Navigator.push<int>(
       context,
       MaterialPageRoute(builder: (_) => const AddCharacterPage()),
     );
-    // Si la pantalla de agregar regresó true, recarga la lista
-    if (created == true) {
+
+    if (newId != null) {
+      // se creó un personaje
       await _load();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Personaje creado')),
+        SnackBar(content: Text('Personaje creado (ID: $newId)')),
       );
     }
   }
 
   void _openStats(Map<String, dynamic> p) {
-  Navigator.pushNamed(
-    context,
-    '/PersonagePages',
-    arguments: {
-      'personId': p['id'],
-      'personName': p['name'],
-      'personClass': p['class'],
-    },
-  );
-}
-  /*void _openStats(Map<String, dynamic> p) {
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (_) => const PersonajePager(),
-        settings: RouteSettings(arguments: {
-          'personId': p['id'],
-          'personName': p['name'],
-          'personClass': p['class'],
-        }),
-      ),
+      '/PersonagePages',
+      arguments: {
+        'personId': p['id'],
+        'personName': p['name'],
+        'personClass': p['class'],
+      },
     );
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +96,7 @@ class _Screen3State extends State<Screen3> {
               title: Text(p['name'] ?? ''),
               subtitle: Text(p['class'] ?? ''),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => _openStats(p), // 👈 cada personaje es un botón
+              onTap: () => _openStats(p),
             );
           },
         ),
@@ -118,7 +107,7 @@ class _Screen3State extends State<Screen3> {
       appBar: AppBar(title: const Text('Personajes')),
       body: body,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openAdd, // 👈 añade y refresca
+        onPressed: _openAdd,
         icon: const Icon(Icons.add),
         label: const Text('Añadir'),
       ),

@@ -52,11 +52,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (_) => const LoginPage(),
         '/register': (_) => const RegisterPage(),
-        '/PersonagePages': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments
-            as Map<String, dynamic>?;
-            return PersonajePager(args: args);
-          },
+        '/PersonagePages': (context) => const PersonajePager(),
         '/screen3': (_) => const Screen3(),
         //Personaje
         /*'/stats': (_) => const StatsPage(),
